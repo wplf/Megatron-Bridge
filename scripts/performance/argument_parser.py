@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import argparse
+import ast
 import logging
 import os
 from pathlib import Path
@@ -460,15 +461,11 @@ def parse_cli_args():
         action="store_true",
     )
     performance_args.add_argument(
-        "--profiling_start_step", type=int, help="Defines start step for profiling", required=False, default=10
-    )
-    performance_args.add_argument(
-        "--profiling_stop_step", type=int, help="Defines stop step for profiling", required=False, default=11
-    )
-    performance_args.add_argument(
-        "--profiling_gpu_metrics",
-        help="Enable nsys gpu metrics. Disabled by default.",
-        action="store_true",
+        "--nsys_args",
+        type=ast.literal_eval,
+        help="Nsight Systems arguments. Defaults to None",
+        required=False,
+        default=None,
     )
     performance_args.add_argument(
         "--use_tokendrop",
@@ -565,6 +562,13 @@ def parse_cli_args():
         help=f"Directory for logging experiment results. Defaults to {get_nemorun_home()}",
         required=False,
         default=get_nemorun_home(),
+    )
+    logging_args.add_argument(
+        "--experiment_name",
+        type=str,
+        help="Experiment name",
+        required=False,
+        default=None,
     )
 
     parser.add_argument(

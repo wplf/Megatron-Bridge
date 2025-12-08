@@ -181,13 +181,12 @@ def main(
     wandb_project_name: str,
     wandb_experiment_name: str,
     wandb_entity_name: str,
-    profiling_start_step: int,
-    profiling_stop_step: int,
-    profiling_gpu_metrics: bool,
+    nsys_args: Optional[Dict[str, Any]],
     nemo_home: str,
     account: str,
     partition: str,
     log_dir: str,
+    experiment_name: Optional[str],
     gpus_per_node: int,
     time_limit: str,
     container_image: str,
@@ -310,13 +309,15 @@ def main(
         )
 
     if enable_nsys:
-        plugins.append(
-            NsysPlugin(
-                profile_step_start=profiling_start_step,
-                profile_step_end=profiling_stop_step,
-                nsys_gpu_metrics=profiling_gpu_metrics,
+        if nsys_args is None:
+            plugins.append(
+                NsysPlugin(
+                    profile_step_start=10,
+                    profile_step_end=11,
+                )
             )
-        )
+        else:
+            plugins.append(NsysPlugin(**nsys_args))
 
     nemorun_script = run.Script(
         path=str(run_script_path),
@@ -334,6 +335,8 @@ def main(
     exp_name = (
         exp_name[:37] if dgxc_cluster is not None else exp_name
     )  # Some k8s clusters have a limit on the length of the experiment name.
+    if experiment_name is not None:
+        exp_name = experiment_name
     wandb_run_id = None
     while n_attempts <= max_retries:
         while is_finished_experiment is False:
@@ -470,13 +473,12 @@ if __name__ == "__main__":
         wandb_project_name=args.wandb_project_name,
         wandb_experiment_name=args.wandb_experiment_name,
         wandb_entity_name=args.wandb_entity_name,
-        profiling_start_step=args.profiling_start_step,
-        profiling_stop_step=args.profiling_stop_step,
-        profiling_gpu_metrics=args.profiling_gpu_metrics,
+        nsys_args=args.nsys_args,
         nemo_home=args.nemo_home,
         account=args.account,
         partition=args.partition,
         log_dir=args.log_dir,
+        experiment_name=args.experiment_name,
         gpus_per_node=args.gpus_per_node,
         time_limit=args.time_limit,
         container_image=args.container_image,
