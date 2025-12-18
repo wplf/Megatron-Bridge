@@ -92,6 +92,7 @@ def set_common_perf_overrides(recipe: ConfigContainer) -> None:
 
     recipe.logger.log_interval = 1
     recipe.logger.tensorboard_dir = None
+    recipe.profiling.torch_trace_path = "/nemo_run/torch_traces/trace.json" # adjust name
     recipe.logger.save_config_filepath = "/nemo_run/configs/ConfigContainer.yaml"
 
     recipe.ddp.check_for_nan_in_grad = False

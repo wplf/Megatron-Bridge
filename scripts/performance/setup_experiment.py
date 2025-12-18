@@ -28,9 +28,9 @@ import nemo_run as run
 
 
 try:
-    from perf_plugins import NsysPlugin, PerfEnvPlugin
+    from perf_plugins import NsysPlugin, PyTorchProfilerPlugin, PerfEnvPlugin
 except (ImportError, ModuleNotFoundError):
-    from .perf_plugins import NsysPlugin, PerfEnvPlugin
+    from .perf_plugins import NsysPlugin, PyTorchProfilerPlugin, PerfEnvPlugin
 
 import logging
 
@@ -104,11 +104,19 @@ def main(
         )
     )
     if enable_nsys:
+        # plugins.append(
+        #     NsysPlugin(
+        #         profile_step_start=profiling_start_step,
+        #         profile_step_end=profiling_stop_step,
+        #         nsys_gpu_metrics=profiling_gpu_metrics,
+        #     )
+        # )
+
+        # Add this plugin to your experiment setup
         plugins.append(
-            NsysPlugin(
+            PyTorchProfilerPlugin(
                 profile_step_start=profiling_start_step,
                 profile_step_end=profiling_stop_step,
-                nsys_gpu_metrics=profiling_gpu_metrics,
             )
         )
 

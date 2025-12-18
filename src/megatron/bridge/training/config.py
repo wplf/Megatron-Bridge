@@ -875,6 +875,9 @@ class ProfilingConfig:
     use_pytorch_profiler: bool = False
     """Use the built-in pytorch profiler. Useful if you wish to view profiles in tensorboard."""
 
+    torch_trace_path: str = "torch_traces/trace.json"
+    """Path to save the pytorch trace."""
+
     profile_ranks: list[int] = field(default_factory=lambda: [0])
     """Global ranks to profile."""
 
