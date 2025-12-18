@@ -188,6 +188,12 @@ def parse_cli_args():
         help="Number of gpus.",
         required=True,
     )
+    parser.add_argument(
+        "--use_cudnn_ln",
+        help="Use CuDNN LayerNorm. Disabled by default.",
+        type=bool_arg,
+        required=False,
+    )
 
     # Training
     training_args = parser.add_argument_group("Training arguments")
@@ -526,12 +532,6 @@ def parse_cli_args():
         "--recompute_modules",
         type=list_of_strings,
         help="Comma separated list of modules to recompute. Defaults to None",
-        required=False,
-    )
-    performance_args.add_argument(
-        "--use_cudnn_ln",
-        help="Use CuDNN LayerNorm. Disabled by default.",
-        type=bool_arg,
         required=False,
     )
     # Logging
