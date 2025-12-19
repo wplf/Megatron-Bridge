@@ -241,10 +241,17 @@ def parse_cli_args():
         help="Model size to use for experiment.",
         required=True,
     )
-    parser.add_argument(
+    profile_group = parser.add_mutually_exclusive_group()
+    profile_group.add_argument(
         "-en",
         "--enable_nsys",
-        help="Enable Nsys profiling. Diabled by default",
+        help="Enable Nsys profiling. Disabled by default",
+        action="store_true",
+    )
+    profile_group.add_argument(
+        "-entp",
+        "--enable_torch_profiler",
+        help="Enable PyTorch profiler. Disabled by default",
         action="store_true",
     )
     parser.add_argument(

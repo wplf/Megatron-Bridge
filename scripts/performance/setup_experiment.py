@@ -56,6 +56,7 @@ def main(
     dryrun: bool,
     enable_vboost: bool,
     enable_nsys: bool,
+    enable_torch_profiler: bool,
     use_tokendrop: bool,
     moe_a2a_overlap: bool,
     tp_size: Optional[int],
@@ -104,15 +105,14 @@ def main(
         )
     )
     if enable_nsys:
-        # plugins.append(
-        #     NsysPlugin(
-        #         profile_step_start=profiling_start_step,
-        #         profile_step_end=profiling_stop_step,
-        #         nsys_gpu_metrics=profiling_gpu_metrics,
-        #     )
-        # )
-
-        # Add this plugin to your experiment setup
+        plugins.append(
+            NsysPlugin(
+                profile_step_start=profiling_start_step,
+                profile_step_end=profiling_stop_step,
+                nsys_gpu_metrics=profiling_gpu_metrics,
+            )
+        )
+    elif enable_torch_profiler:
         plugins.append(
             PyTorchProfilerPlugin(
                 profile_step_start=profiling_start_step,
@@ -187,6 +187,7 @@ if __name__ == "__main__":
         dryrun=args.dryrun,
         enable_vboost=args.enable_vboost,
         enable_nsys=args.enable_nsys,
+        enable_torch_profiler=args.enable_torch_profiler,
         use_tokendrop=args.use_tokendrop,
         moe_a2a_overlap=args.moe_a2a_overlap,
         tp_size=args.tensor_model_parallel_size,
