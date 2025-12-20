@@ -92,7 +92,6 @@ def set_common_perf_overrides(recipe: ConfigContainer) -> None:
 
     recipe.logger.log_interval = 1
     recipe.logger.tensorboard_dir = None
-    recipe.profiling.torch_trace_path = "/nemo_run/torch_traces/trace.json" # adjust name
     recipe.logger.save_config_filepath = "/nemo_run/configs/ConfigContainer.yaml"
 
     recipe.ddp.check_for_nan_in_grad = False
@@ -194,6 +193,9 @@ def set_user_overrides(recipe: ConfigContainer, kwargs: Dict[str, Any]) -> None:
         recipe.logger.wandb_project = kwargs.get("wandb_prj_name")
         recipe.logger.wandb_exp_name = kwargs.get("wandb_exp_name")
         recipe.logger.wandb_save_dir = "/nemo_run/wandb"
+
+    if kwargs.get("enable_torch_profiler"):
+        recipe.logger.tensorboard_dir = "/nemo_run/tensorboard"
 
     if kwargs.get("max_steps") is not None:
         recipe.train.train_iters = kwargs.get("max_steps")

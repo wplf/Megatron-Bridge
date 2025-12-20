@@ -20,7 +20,6 @@ import torch
 import torch.profiler
 
 from megatron.bridge.training.config import ProfilingConfig
-import os
 
 
 # Type alias for NVTX context manager
@@ -114,12 +113,6 @@ def initialize_pytorch_profiler(
     Returns:
         Initialized (but not started) PyTorch profiler
     """
-    def trace_handler(p):
-        trace_dir = os.path.dirname(config.torch_trace_path)
-        if trace_dir:
-            os.makedirs(trace_dir, exist_ok=True)
-        p.export_chrome_trace(config.torch_trace_path)
-    
     prof = torch.profiler.profile(
         schedule=torch.profiler.schedule(
             wait=max(config.profile_step_start - 1, 0),
@@ -127,9 +120,8 @@ def initialize_pytorch_profiler(
             active=config.profile_step_end - config.profile_step_start,
             repeat=1,
         ),
-        on_trace_ready=trace_handler,
+        on_trace_ready=torch.profiler.tensorboard_trace_handler(tensorboard_dir),
         record_shapes=config.record_shapes,
-        # with_stack=True,
         activities=[torch.profiler.ProfilerActivity.CUDA],
     )
     return prof
